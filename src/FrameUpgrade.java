@@ -4,18 +4,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrameAccounts extends JFrame {
+public class FrameUpgrade extends JFrame {
     private List<Account> accounts;
 
     private JPanel panel = new JPanel();
     private JList listAccounts = new JList();
     private JScrollPane scrollPaneAccounts = new JScrollPane();
     private JTextArea textAreaDetails = new JTextArea();
-    private JComboBox comboBoxSelectType = new JComboBox();
-    private JButton buttonAddAccount = new JButton("HERE");
+    private JButton buttonUpgrade = new JButton("Upgrade to securities account");
 
-    FrameAccounts() {}
-    FrameAccounts(FrameATM frameATM, BankDatabase bankDatabase) {
+    FrameUpgrade() {}
+    FrameUpgrade(FrameATM frameATM, BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(3, 1));
 
         JPanel panel_1 = new JPanel(); {
@@ -24,12 +23,12 @@ public class FrameAccounts extends JFrame {
             JPanel panel_1_1 = new JPanel(); {
                 panel_1_1.setBorder(BorderFactory.createEtchedBorder(Color.BLACK, Color.BLACK));
                 panel_1_1.setBackground(Color.WHITE);
-                JLabel title = new JLabel("<html>Account Management - <font color='#8A2BE2'>FANCY BANK</font>™</html>", JLabel.CENTER);
+                JLabel title = new JLabel("<html>Account Upgrade - <font color='#8A2BE2'>FANCY BANK</font>™</html>", JLabel.CENTER);
                 panel_1_1.add(title);
             }
             panel_1.add(panel_1_1);
-            panel_1.add(new JLabel("  Your accounts are listed below.", JLabel.LEFT));
-            panel_1.add(new JLabel("  Click to see account details.", JLabel.LEFT));
+            panel_1.add(new JLabel("  Your accounts are listed below. A saving account with balance", JLabel.LEFT));
+            panel_1.add(new JLabel("  more than $3000 can be upgraded to a securities account.", JLabel.LEFT));
         }
         panel.add(panel_1);
 
@@ -52,27 +51,18 @@ public class FrameAccounts extends JFrame {
             textAreaDetails.setBorder(BorderFactory.createTitledBorder("Details"));
             textAreaDetails.setLineWrap(true);
             textAreaDetails.setWrapStyleWord(true);
-            JScrollPane scrollPaneDetails = new JScrollPane(textAreaDetails);
-            panel_2.add(scrollPaneDetails);
+            panel_2.add(textAreaDetails);
         }
         panel.add(panel_2);
 
         JPanel panel_3 = new JPanel(); {
             panel_3.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 30));
-            panel_3.add(new JLabel("To add a new "));
-
-            comboBoxSelectType.addItem("checking");
-            comboBoxSelectType.addItem("saving");
-            panel_3.add(comboBoxSelectType);
-
-            panel_3.add(new JLabel(" account, click "));
-
-            panel_3.add(buttonAddAccount);
+            panel_3.add(buttonUpgrade);
         }
         panel.add(panel_3);
 
         add(panel);
-        setTitle("MANAGE ACCOUNTS");
+        setTitle("UPGRADE ACCOUNTS");
         setSize(400, 300);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -85,24 +75,23 @@ public class FrameAccounts extends JFrame {
             }
         });
 
-        buttonAddAccount.addActionListener(e -> {
-            String username = frameATM.getClient().getUsername();
-            Client client = bankDatabase.getClient(username);
-            Account account;
-            switch (comboBoxSelectType.getSelectedIndex()) {
-                case 0: {
-                    account = new AccountChecking(username + "Acc" + (client.getAccounts().size() + 1), 0);
-                    bankDatabase.addAccount(username, account);
+        buttonUpgrade.addActionListener(e -> {
+            if (!listAccounts.isSelectionEmpty()) {
+                String username = frameATM.getClient().getUsername();
+                Client client = bankDatabase.getClient(username);
+                int accountIndex = listAccounts.getSelectedIndex();
+                Account account = client.getAccounts().get(accountIndex);
+                if (account.getBalance() >= 3000 && account.getAccountType() == "saving") {
+                    bankDatabase.upgradeToSecurities(username, accountIndex);
                     frameATM.setClient(bankDatabase.getClient(username));
-                } break;
-                case 1: {
-                    account = new AccountSaving(username + "Acc" + (client.getAccounts().size() + 1), 0);
-                    bankDatabase.addAccount(username, account);
-                    frameATM.setClient(bankDatabase.getClient(username));
-                } break;
+                    JOptionPane.showMessageDialog(this, "Upgrade Success.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Only saving account with balance ≥ $3000 can be upgraded.", "WRONG ACCOUNT", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select an account.", "NO ACCOUNT", JOptionPane.INFORMATION_MESSAGE);
             }
-            JOptionPane.showMessageDialog(this, "New account added!", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
-            dispose();
         });
     }
 }

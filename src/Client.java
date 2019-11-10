@@ -4,7 +4,6 @@ import java.util.List;
 public class Client {
     private String username;
     private String password;
-    private String clientId;
     private List<Account> accounts;
     private double loanInterestRate;
     private List<Loan> loans;
@@ -13,7 +12,7 @@ public class Client {
         username = name;
         password = pwd;
         accounts = new ArrayList<>();
-        loanInterestRate = BankDataBase.loanInterestRate;
+        loanInterestRate = BankDatabase.loanInterestRate;
         loans = new ArrayList<>();
     }
 
@@ -95,5 +94,25 @@ public class Client {
     public void applyLoanInterest(int loanIndex, int timePeriod) {
         Loan loan = loans.get(loanIndex);
         loan.applyInterest(timePeriod);
+    }
+
+    public void upgradeToSecurities(int accountIndex) {
+        if (accounts.get(accountIndex) instanceof AccountSaving) {
+            AccountSaving accountSaving = (AccountSaving)accounts.get(accountIndex);
+            AccountSecurities accountSecurities = new AccountSecurities(accountSaving);
+            accounts.set(accountIndex, accountSecurities);
+        }
+    }
+
+    public void buyStock(int accountIndex, Stock stock, int buyAmount) {
+        if (accounts.get(accountIndex) instanceof AccountSecurities) {
+            ((AccountSecurities) accounts.get(accountIndex)).buyStock(stock, buyAmount);
+        }
+    }
+
+    public void sellStock(int accountIndex, Stock stock, int sellAmount) {
+        if (accounts.get(accountIndex) instanceof AccountSecurities) {
+            ((AccountSecurities) accounts.get(accountIndex)).sellStock(stock, sellAmount);
+        }
     }
 }

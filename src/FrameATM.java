@@ -5,7 +5,12 @@ import java.util.List;
 
 public class FrameATM extends JFrame {
     public static void main(String[] args) {
-        FrameATM frameATM = new FrameATM(new BankDataBase());
+        BankDatabase bankDatabase = new BankDatabase();
+        Client client = new Client("123", "123");
+        client.addAccount(new AccountChecking("123Acc1", 1000));
+        client.addAccount(new AccountSaving("123Acc2", 3000));
+        bankDatabase.addClient(client);
+        FrameATM frameATM = new FrameATM(bankDatabase);
         frameATM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameATM.setVisible(true);
     }
@@ -23,6 +28,8 @@ public class FrameATM extends JFrame {
     private JButton buttonWithdraw = new JButton("Withdraw");
     private JButton buttonTransfer = new JButton("Transfer");
     private JButton buttonManageLoan = new JButton("Manage Loans");
+    private JButton buttonUpgrade = new JButton("Upgrade Accounts");
+    private JButton buttonTradeStock = new JButton("Stock Trade");
     private JButton buttonManageAccount = new JButton("View Accounts");
 
     private FrameLogin frameLogin = new FrameLogin();
@@ -31,11 +38,13 @@ public class FrameATM extends JFrame {
     private FrameWithdraw frameWithdraw = new FrameWithdraw();
     private FrameTransfer frameTransfer = new FrameTransfer();
     private FrameLoans frameLoans = new FrameLoans();
+    private FrameUpgrade frameUpgrade = new FrameUpgrade();
+    private FrameStockTrade frameStockTrade = new FrameStockTrade();
     private FrameAccounts frameAccounts = new FrameAccounts();
 
     FrameATM() {}
-    FrameATM(BankDataBase bankDataBase) {
-        panel.setLayout(new GridLayout(4, 1));
+    FrameATM(BankDatabase bankDatabase) {
+        panel.setLayout(new GridLayout(5, 1));
 
         JPanel panel_1 = new JPanel(); {
             panel_1.setLayout(new GridLayout(3, 1));
@@ -98,30 +107,47 @@ public class FrameATM extends JFrame {
             panel_4.setLayout(new GridLayout(2, 1));
 
             JPanel panel_4_1 = new JPanel(); {
-                buttonManageAccount.setPreferredSize(new Dimension(150, 45));
-                panel_4_1.add(buttonManageAccount);
+                buttonUpgrade.setPreferredSize(new Dimension(150, 45));
+                panel_4_1.add(buttonUpgrade);
             }
             panel_4.add(panel_4_1);
 
             JPanel panel_4_2 = new JPanel(); {
-                panel_4_2.setBorder(BorderFactory.createEtchedBorder());
-                panel_4_2.setLayout(new GridLayout(2, 1));
-                panel_4_2.add(new JLabel("Version 1.0 | CS591 P1 Boston University", JLabel.CENTER));
-                panel_4_2.add(new JLabel("Contact us: Yufeng Chen, yufeng72@bu.edu", JLabel.CENTER));
+                buttonTradeStock.setPreferredSize(new Dimension(150, 45));
+                panel_4_2.add(buttonTradeStock);
             }
             panel_4.add(panel_4_2);
         }
         panel.add(panel_4);
 
+        JPanel panel_5 = new JPanel(); {
+            panel_5.setLayout(new GridLayout(2, 1));
+
+            JPanel panel_5_1 = new JPanel(); {
+                buttonManageAccount.setPreferredSize(new Dimension(150, 45));
+                panel_5_1.add(buttonManageAccount);
+            }
+            panel_5.add(panel_5_1);
+
+            JPanel panel_5_2 = new JPanel(); {
+                panel_5_2.setBorder(BorderFactory.createEtchedBorder());
+                panel_5_2.setLayout(new GridLayout(2, 1));
+                panel_5_2.add(new JLabel("Version 1.0 | CS591 P1 Boston University", JLabel.CENTER));
+                panel_5_2.add(new JLabel("Contact us: Yufeng Chen, yufeng72@bu.edu", JLabel.CENTER));
+            }
+            panel_5.add(panel_5_2);
+        }
+        panel.add(panel_5);
+
         add(panel);
         setTitle("FANCY BANK ATM");
-        setSize(300, 500);
+        setSize(300, 600);
         setLocationRelativeTo(null);
         setResizable(false);
 
         buttonLogin.addActionListener(e -> { // login
             if (!subWindowExist() && !login) {
-                frameLogin = new FrameLogin(this, bankDataBase);
+                frameLogin = new FrameLogin(this, bankDatabase);
                 frameLogin.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frameLogin.setVisible(true);
             } else if (!subWindowExist() && login) { // logout
@@ -132,7 +158,7 @@ public class FrameATM extends JFrame {
 
         buttonRegister.addActionListener(e -> { // register
             if (!subWindowExist() && !login) {
-                frameRegister = new FrameRegister(bankDataBase);
+                frameRegister = new FrameRegister(bankDatabase);
                 frameRegister.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frameRegister.setVisible(true);
             }
@@ -141,7 +167,7 @@ public class FrameATM extends JFrame {
         buttonDeposit.addActionListener(e -> { // deposit
             if (login) {
                 if (!subWindowExist()) {
-                    frameDeposit = new FrameDeposit(this, bankDataBase);
+                    frameDeposit = new FrameDeposit(this, bankDatabase);
                     frameDeposit.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frameDeposit.setVisible(true);
                 }
@@ -153,7 +179,7 @@ public class FrameATM extends JFrame {
         buttonWithdraw.addActionListener(e -> { // withdraw
             if (login) {
                 if (!subWindowExist()) {
-                    frameWithdraw = new FrameWithdraw(this, bankDataBase);
+                    frameWithdraw = new FrameWithdraw(this, bankDatabase);
                     frameWithdraw.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frameWithdraw.setVisible(true);
                 }
@@ -165,7 +191,7 @@ public class FrameATM extends JFrame {
         buttonTransfer.addActionListener(e -> { // transfer
             if (login) {
                 if (!subWindowExist()) {
-                    frameTransfer = new FrameTransfer(this, bankDataBase);
+                    frameTransfer = new FrameTransfer(this, bankDatabase);
                     frameTransfer.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frameTransfer.setVisible(true);
                 }
@@ -177,9 +203,33 @@ public class FrameATM extends JFrame {
         buttonManageLoan.addActionListener(e -> { // request/repay loans
             if (login) {
                 if (!subWindowExist()) {
-                    frameLoans = new FrameLoans(this, bankDataBase);
+                    frameLoans = new FrameLoans(this, bankDatabase);
                     frameLoans.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frameLoans.setVisible(true);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please login first.", "NO LOGIN", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        buttonUpgrade.addActionListener(e -> { // upgrade to securities account
+            if (login) {
+                if (!subWindowExist()) {
+                    frameUpgrade = new FrameUpgrade(this, bankDatabase);
+                    frameUpgrade.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frameUpgrade.setVisible(true);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please login first.", "NO LOGIN", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        buttonTradeStock.addActionListener(e -> { // stock trade
+            if (login) {
+                if (!subWindowExist()) {
+                    frameStockTrade = new FrameStockTrade(this, bankDatabase);
+                    frameStockTrade.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    frameStockTrade.setVisible(true);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Please login first.", "NO LOGIN", JOptionPane.INFORMATION_MESSAGE);
@@ -189,7 +239,7 @@ public class FrameATM extends JFrame {
         buttonManageAccount.addActionListener(e -> { // view/add accounts
             if (login) {
                 if (!subWindowExist()) {
-                    frameAccounts = new FrameAccounts(this, bankDataBase);
+                    frameAccounts = new FrameAccounts(this, bankDatabase);
                     frameAccounts.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frameAccounts.setVisible(true);
                 }
@@ -225,13 +275,15 @@ public class FrameATM extends JFrame {
         login = false;
     }
 
-    private boolean subWindowExist() { //todo: add other frame
+    private boolean subWindowExist() { // one sub window at the same time
         return (frameLogin.isVisible() ||
                 frameRegister.isVisible() ||
                 frameDeposit.isVisible() ||
                 frameWithdraw.isVisible() ||
                 frameTransfer.isVisible() ||
                 frameLoans.isVisible() ||
+                frameUpgrade.isVisible() ||
+                frameStockTrade.isVisible() ||
                 frameAccounts.isVisible());
     }
 }

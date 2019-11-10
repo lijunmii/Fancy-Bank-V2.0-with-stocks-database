@@ -12,7 +12,7 @@ public class FrameRegister extends JFrame {
     private JButton buttonRegister = new JButton("Register");
 
     FrameRegister() {}
-    FrameRegister(BankDataBase bankDataBase) {
+    FrameRegister(BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(6, 1));
         panel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -77,12 +77,12 @@ public class FrameRegister extends JFrame {
             } else if (!password.equals(passwordAgain)) {
                 JOptionPane.showMessageDialog(this, "Password doesn't match!", "NO MATCH", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                if (!bankDataBase.usernameExist(username)) {
+                if (!bankDatabase.usernameExist(username)) {
                     Client client = new Client(username, password);
                     // 2 default accounts for every new client
                     client.addAccount(new AccountChecking(username + "Acc" + (client.getAccounts().size() + 1), 100));
                     client.addAccount(new AccountSaving(username + "Acc" + (client.getAccounts().size() + 1), 0));
-                    bankDataBase.addClient(client);
+                    bankDatabase.addClient(client);
                     JOptionPane.showMessageDialog(this, "Registration Success!", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                     dispose();
                 } else {

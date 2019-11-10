@@ -9,8 +9,6 @@ public class FrameDeposit extends JFrame {
     private List<Account> accounts;
     private Currency currency = new Currency();
 
-    DecimalFormat df = new DecimalFormat("0.00");
-
     private JPanel panel = new JPanel();
     private JList listAccounts = new JList();
     private JScrollPane scrollPaneAccounts = new JScrollPane();
@@ -20,7 +18,7 @@ public class FrameDeposit extends JFrame {
     private JButton buttonDeposit = new JButton("Make Deposit");
 
     FrameDeposit() {}
-    FrameDeposit(FrameATM frameATM, BankDataBase bankDataBase) {
+    FrameDeposit(FrameATM frameATM, BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(3, 1));
 
         JPanel panel_1 = new JPanel(); {
@@ -43,7 +41,7 @@ public class FrameDeposit extends JFrame {
             panel_2.setBorder(BorderFactory.createEtchedBorder());
 
             String username = frameATM.getClient().getUsername();
-            accounts = bankDataBase.getClient(username).getAccounts();
+            accounts = bankDatabase.getClient(username).getAccounts();
             List<String> accountIds = new ArrayList<>();
             for (Account account : accounts) {
                 accountIds.add(account.getAccountId());
@@ -57,7 +55,8 @@ public class FrameDeposit extends JFrame {
             textAreaDetails.setBorder(BorderFactory.createTitledBorder("Details"));
             textAreaDetails.setLineWrap(true);
             textAreaDetails.setWrapStyleWord(true);
-            panel_2.add(textAreaDetails);
+            JScrollPane scrollPaneDetails = new JScrollPane(textAreaDetails);
+            panel_2.add(scrollPaneDetails);
         }
         panel.add(panel_2);
 
@@ -89,9 +88,7 @@ public class FrameDeposit extends JFrame {
         listAccounts.addListSelectionListener(e -> {
             if (!listAccounts.isSelectionEmpty()) {
                 Account account = accounts.get(listAccounts.getSelectedIndex());
-                String accountDetails = "Account ID: " + account.getAccountId();
-                accountDetails += "\nAccount type: " + account.getAccountType();
-                accountDetails += "\nAccount balance: $" + df.format(account.getBalance());
+                String accountDetails = account.toString();
                 textAreaDetails.setText(accountDetails);
             }
         });
@@ -111,8 +108,8 @@ public class FrameDeposit extends JFrame {
                             case 1: amount = currency.eur2usd(amount); break;
                             case 2: amount = currency.cny2usd(amount); break;
                         }
-                        bankDataBase.deposit(username, accountIndex, amount);
-                        frameATM.setClient(bankDataBase.getClient(username));
+                        bankDatabase.deposit(username, accountIndex, amount);
+                        frameATM.setClient(bankDatabase.getClient(username));
                         JOptionPane.showMessageDialog(this, "Deposit Success.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
                     } else {

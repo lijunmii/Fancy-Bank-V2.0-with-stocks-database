@@ -9,8 +9,6 @@ public class FrameLoans extends JFrame {
     private List<Account> accounts;
     private List<Loan> loans;
 
-    DecimalFormat df = new DecimalFormat("0.00");
-
     private JPanel panel = new JPanel();
     private JList listLoans = new JList();
     private JScrollPane scrollPaneLoans = new JScrollPane();
@@ -23,7 +21,7 @@ public class FrameLoans extends JFrame {
     private JButton buttonRepayLoan = new JButton("Repay Loan");
 
     FrameLoans() {}
-    FrameLoans(FrameATM frameATM, BankDataBase bankDataBase) {
+    FrameLoans(FrameATM frameATM, BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(4, 1));
 
         JPanel panel_1 = new JPanel(); {
@@ -47,7 +45,7 @@ public class FrameLoans extends JFrame {
             panel_2.setBorder(BorderFactory.createEtchedBorder());
 
             String username = frameATM.getClient().getUsername();
-            loans = bankDataBase.getClient(username).getLoans();
+            loans = bankDatabase.getClient(username).getLoans();
             List<String> loanDates = new ArrayList<>();
             for (int i = 0; i < loans.size(); i++) {
                 Loan loan = loans.get(i);
@@ -71,7 +69,7 @@ public class FrameLoans extends JFrame {
             panel_3.setBorder(BorderFactory.createEtchedBorder());
 
             String username = frameATM.getClient().getUsername();
-            accounts = bankDataBase.getClient(username).getAccounts();
+            accounts = bankDatabase.getClient(username).getAccounts();
             List<String> accountIds = new ArrayList<>();
             for (Account account : accounts) {
                 accountIds.add(account.getAccountId());
@@ -85,7 +83,8 @@ public class FrameLoans extends JFrame {
             textAreaAccountDetails.setBorder(BorderFactory.createTitledBorder("Account Details"));
             textAreaAccountDetails.setLineWrap(true);
             textAreaAccountDetails.setWrapStyleWord(true);
-            panel_3.add(textAreaAccountDetails);
+            JScrollPane scrollPaneDetails = new JScrollPane(textAreaAccountDetails);
+            panel_3.add(scrollPaneDetails);
         }
         panel.add(panel_3);
 
@@ -121,9 +120,7 @@ public class FrameLoans extends JFrame {
         listLoans.addListSelectionListener(e -> {
             if (!listLoans.isSelectionEmpty()) {
                 Loan loan = loans.get(listLoans.getSelectedIndex());
-                String loanDetails = "Loan request date: " + loan.getRequestDate();
-                loanDetails += "\nLoan amount: $" + df.format(loan.getAmount());
-                loanDetails += "\nRepayment: $" + df.format(loan.getRepayment());
+                String loanDetails = loan.toString();
                 textAreaLoanDetails.setText(loanDetails);
             }
         });
@@ -131,9 +128,7 @@ public class FrameLoans extends JFrame {
         listAccounts.addListSelectionListener(e -> {
             if (!listAccounts.isSelectionEmpty()) {
                 Account account = accounts.get(listAccounts.getSelectedIndex());
-                String accountDetails = "Account ID: " + account.getAccountId();
-                accountDetails += "\nAccount type: " + account.getAccountType();
-                accountDetails += "\nAccount balance: $" + df.format(account.getBalance());
+                String accountDetails = account.toString();
                 textAreaAccountDetails.setText(accountDetails);
             }
         });
@@ -148,8 +143,8 @@ public class FrameLoans extends JFrame {
                         String username = frameATM.getClient().getUsername();
                         int accountIndex = listAccounts.getSelectedIndex();
                         double amount = Double.parseDouble(amountStr);
-                        bankDataBase.addLoan(username, accountIndex, amount);
-                        frameATM.setClient(bankDataBase.getClient(username));
+                        bankDatabase.addLoan(username, accountIndex, amount);
+                        frameATM.setClient(bankDatabase.getClient(username));
                         JOptionPane.showMessageDialog(this, "Request Loan Success.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                         dispose();
                     } else {
@@ -169,9 +164,9 @@ public class FrameLoans extends JFrame {
                     if (!listAccounts.isSelectionEmpty()) {
                         String username = frameATM.getClient().getUsername();
                         int accountIndex = listAccounts.getSelectedIndex();
-                        if (bankDataBase.getClient(username).getAccounts().get(accountIndex).able2Transaction(repayment)) {
-                            bankDataBase.repayLoan(username, accountIndex, loanIndex);
-                            frameATM.setClient(bankDataBase.getClient(username));
+                        if (bankDatabase.getClient(username).getAccounts().get(accountIndex).able2Transaction(repayment)) {
+                            bankDatabase.repayLoan(username, accountIndex, loanIndex);
+                            frameATM.setClient(bankDatabase.getClient(username));
                             JOptionPane.showMessageDialog(this, "Repayment Success.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                         } else {

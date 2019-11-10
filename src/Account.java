@@ -1,8 +1,12 @@
+import java.text.DecimalFormat;
+
 abstract class Account {
-    protected static final String[] accountTypes = {"checking", "saving"};
+    protected static final String[] accountTypes = {"checking", "saving", "securities"};
     protected String accountType;
     protected String accountId;
     protected double balance;
+
+    DecimalFormat df = new DecimalFormat("0.00");
 
     Account(String accountId, double balance) {
         this.accountId = accountId;
@@ -31,6 +35,14 @@ abstract class Account {
 
     public boolean able2Transaction(double amount) {
         return (amount <= balance);
+    }
+
+    @Override
+    public String toString() { // for print account info
+        String accountDetails = "Account ID: " + getAccountId();
+        accountDetails += "\nAccount type: " + getAccountType();
+        accountDetails += "\nAccount balance: $" + df.format(getBalance());
+        return accountDetails;
     }
 
     abstract void withdraw(double amount);

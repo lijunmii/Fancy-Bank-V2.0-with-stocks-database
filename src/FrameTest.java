@@ -8,7 +8,7 @@ public class FrameTest extends JFrame {
     private FrameATM frameATM;
     private FrameBankManager frameBankManager;
 
-    FrameTest(BankDataBase bankDataBase) {
+    FrameTest(BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(2, 1));
 
         JPanel panelTestClient = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 30));
@@ -34,7 +34,7 @@ public class FrameTest extends JFrame {
 
         testClient.addActionListener(e -> {
             if (!subWindowExist()) {
-                frameATM = new FrameATM(bankDataBase);
+                frameATM = new FrameATM(bankDatabase);
                 frameATM.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frameATM.setVisible(true);
             }
@@ -42,7 +42,7 @@ public class FrameTest extends JFrame {
 
         testManager.addActionListener(e -> {
             if (!subWindowExist()) {
-                frameBankManager = new FrameBankManager(bankDataBase);
+                frameBankManager = new FrameBankManager(bankDatabase);
                 frameBankManager.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frameBankManager.setVisible(true);
             }

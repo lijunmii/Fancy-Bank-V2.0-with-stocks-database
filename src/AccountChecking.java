@@ -5,8 +5,8 @@ public class AccountChecking extends Account {
     AccountChecking(String accountId, double balance) {
         super(accountId, balance);
         accountType = accountTypes[0];
-        withdrawFeeRate = BankDataBase.withdrawFeeRate;
-        transferFeeRate = BankDataBase.transferFeeRate;
+        withdrawFeeRate = BankDatabase.withdrawFeeRate;
+        transferFeeRate = BankDatabase.transferFeeRate;
     }
 
     public void transfer(Account account, double amount) {

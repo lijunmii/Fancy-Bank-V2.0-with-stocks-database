@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class Loan {
@@ -5,6 +6,8 @@ public class Loan {
     private double amount;
     private double repayment;
     private double interestRate;
+
+    DecimalFormat df = new DecimalFormat("0.00");
 
     Loan() {
         requestDate = new Date();
@@ -41,5 +44,13 @@ public class Loan {
         for (int i = 0; i < timePeriod; i++) {
             repayment *= (1 + interestRate);
         }
+    }
+
+    @Override
+    public String toString() {
+        String loanDetails = "Loan request date: " + getRequestDate();
+        loanDetails += "\nLoan amount: $" + df.format(getAmount());
+        loanDetails += "\nRepayment: $" + df.format(getRepayment());
+        return loanDetails;
     }
 }

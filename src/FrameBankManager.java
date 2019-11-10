@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FrameBankManager extends JFrame {
-    private BankDataBase bankDataBase;
+    private BankDatabase bankDatabase;
     private List<Account> accounts = new ArrayList<>();
     private List<Loan> loans = new ArrayList<>();
     private List<TransactionRecord> records = new ArrayList<>();
-
-    DecimalFormat df = new DecimalFormat("0.00");
 
     private JPanel panel = new JPanel();
 
@@ -28,8 +26,8 @@ public class FrameBankManager extends JFrame {
     private JTextArea textAreaRecordDetails = new JTextArea();
 
     FrameBankManager() {}
-    FrameBankManager(BankDataBase currentBankDataBase) {
-        bankDataBase = currentBankDataBase;
+    FrameBankManager(BankDatabase currentBankDatabase) {
+        bankDatabase = currentBankDatabase;
 
         panel.setLayout(new GridLayout(3, 1));
 
@@ -52,7 +50,7 @@ public class FrameBankManager extends JFrame {
             panel_2.setBorder(BorderFactory.createEtchedBorder());
 
             List<String> usernameList = new ArrayList<>();
-            for (Client client : bankDataBase.getClients()) {
+            for (Client client : bankDatabase.getClients()) {
                 usernameList.add(client.getUsername());
             }
             listClients.setListData(usernameList.toArray());
@@ -73,7 +71,8 @@ public class FrameBankManager extends JFrame {
                 textAreaAccountDetails.setBorder(BorderFactory.createTitledBorder("Details"));
                 textAreaAccountDetails.setLineWrap(true);
                 textAreaAccountDetails.setWrapStyleWord(true);
-                panel_2_2.add(textAreaAccountDetails);
+                JScrollPane scrollPaneDetails = new JScrollPane(textAreaAccountDetails);
+                panel_2_2.add(scrollPaneDetails);
             }
             panel_2.add(panel_2_2);
 
@@ -99,7 +98,7 @@ public class FrameBankManager extends JFrame {
             panel_3.setLayout(new GridLayout(1, 2));
             panel_3.setBorder(BorderFactory.createEtchedBorder());
 
-            records = bankDataBase.getRecords();
+            records = bankDatabase.getRecords();
             List<String> recordList = new ArrayList<>();
             for (TransactionRecord record : records) {
                 recordList.add(record.getRecordSummary());
@@ -125,14 +124,14 @@ public class FrameBankManager extends JFrame {
 
         listClients.addListSelectionListener(e -> {
             if (!listClients.isSelectionEmpty()) {
-                accounts = bankDataBase.getClients().get(listClients.getSelectedIndex()).getAccounts();
+                accounts = bankDatabase.getClients().get(listClients.getSelectedIndex()).getAccounts();
                 List<String> accountIds = new ArrayList<>();
                 for (Account account : accounts) {
                     accountIds.add(account.getAccountId());
                 }
                 listAccounts.setListData(accountIds.toArray());
 
-                loans = bankDataBase.getClients().get(listClients.getSelectedIndex()).getLoans();
+                loans = bankDatabase.getClients().get(listClients.getSelectedIndex()).getLoans();
                 List<String> loanDates = new ArrayList<>();
                 for (int i = 0; i < loans.size(); i++) {
                     Loan loan = loans.get(i);
@@ -140,18 +139,15 @@ public class FrameBankManager extends JFrame {
                 }
                 listLoans.setListData(loanDates.toArray());
 
-                textAreaAccountDetails.setText("");
-
-                textAreaLoanDetails.setText("");
+                textAreaAccountDetails.setText(null);
+                textAreaLoanDetails.setText(null);
             }
         });
 
         listAccounts.addListSelectionListener(e -> {
             if (!listAccounts.isSelectionEmpty()) {
                 Account account = accounts.get(listAccounts.getSelectedIndex());
-                String accountDetails = "Account ID: " + account.getAccountId();
-                accountDetails += "\nAccount type: " + account.getAccountType();
-                accountDetails += "\nAccount balance: $" + df.format(account.getBalance());
+                String accountDetails = account.toString();
                 textAreaAccountDetails.setText(accountDetails);
             }
         });
@@ -159,9 +155,7 @@ public class FrameBankManager extends JFrame {
         listLoans.addListSelectionListener(e -> {
             if (!listLoans.isSelectionEmpty()) {
                 Loan loan = loans.get(listLoans.getSelectedIndex());
-                String loanDetails = "Loan request date: " + loan.getRequestDate();
-                loanDetails += "\nLoan amount: $" + df.format(loan.getAmount());
-                loanDetails += "\nRepayment: $" + df.format(loan.getRepayment());
+                String loanDetails = loan.toString();
                 textAreaLoanDetails.setText(loanDetails);
             }
         });

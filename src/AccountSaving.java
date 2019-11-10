@@ -4,7 +4,7 @@ public class AccountSaving extends Account {
     AccountSaving(String accountId, double balance) {
         super(accountId, balance);
         accountType = accountTypes[1];
-        savingInterestRate = BankDataBase.savingInterestRate;
+        savingInterestRate = BankDatabase.savingInterestRate;
     }
 
     public void transfer(Account account, double amount) {

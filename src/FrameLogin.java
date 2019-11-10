@@ -9,7 +9,7 @@ public class FrameLogin extends JFrame {
     private JButton buttonLogin = new JButton("Login");
 
     FrameLogin() {}
-    FrameLogin(FrameATM frameATM, BankDataBase bankDataBase) {
+    FrameLogin(FrameATM frameATM, BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(3, 1));
         panel.setBorder(BorderFactory.createEtchedBorder());
 
@@ -45,7 +45,7 @@ public class FrameLogin extends JFrame {
             } else if (password.length() == 0) {
                 JOptionPane.showMessageDialog(this, "Empty password!", "MISSING CONTENT", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                Client client = bankDataBase.getClient(username, password);
+                Client client = bankDatabase.getClient(username, password);
                 if (client != null) {
                     frameATM.successLogin(client);
                     dispose();

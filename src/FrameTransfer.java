@@ -9,8 +9,6 @@ public class FrameTransfer extends JFrame {
     private List<Account> accounts;
     private Currency currency = new Currency();
 
-    DecimalFormat df = new DecimalFormat("0.00");
-
     private JPanel panel = new JPanel();
     private JList listAccounts = new JList();
     private JScrollPane scrollPaneAccounts = new JScrollPane();
@@ -21,7 +19,7 @@ public class FrameTransfer extends JFrame {
     private JButton buttonTransfer = new JButton("Transfer");
 
     FrameTransfer() {}
-    FrameTransfer(FrameATM frameATM, BankDataBase bankDataBase) {
+    FrameTransfer(FrameATM frameATM, BankDatabase bankDatabase) {
         panel.setLayout(new GridLayout(3, 1));
 
         JPanel panel_1 = new JPanel(); {
@@ -44,7 +42,7 @@ public class FrameTransfer extends JFrame {
             panel_2.setBorder(BorderFactory.createEtchedBorder());
 
             String username = frameATM.getClient().getUsername();
-            accounts = bankDataBase.getClient(username).getAccounts();
+            accounts = bankDatabase.getClient(username).getAccounts();
             List<String> accountIds = new ArrayList<>();
             for (Account account : accounts) {
                 accountIds.add(account.getAccountId());
@@ -58,7 +56,8 @@ public class FrameTransfer extends JFrame {
             textAreaDetails.setBorder(BorderFactory.createTitledBorder("Details"));
             textAreaDetails.setLineWrap(true);
             textAreaDetails.setWrapStyleWord(true);
-            panel_2.add(textAreaDetails);
+            JScrollPane scrollPaneDetails = new JScrollPane(textAreaDetails);
+            panel_2.add(scrollPaneDetails);
         }
         panel.add(panel_2);
 
@@ -101,9 +100,7 @@ public class FrameTransfer extends JFrame {
         listAccounts.addListSelectionListener(e -> {
             if (!listAccounts.isSelectionEmpty()) {
                 Account account = accounts.get(listAccounts.getSelectedIndex());
-                String accountDetails = "Account ID: " + account.getAccountId();
-                accountDetails += "\nAccount type: " + account.getAccountType();
-                accountDetails += "\nAccount balance: $" + df.format(account.getBalance());
+                String accountDetails = account.toString();
                 textAreaDetails.setText(accountDetails);
             }
         });
@@ -126,11 +123,11 @@ public class FrameTransfer extends JFrame {
                             case 1: amount = currency.eur2usd(amount); break;
                             case 2: amount = currency.cny2usd(amount); break;
                         }
-                        if (bankDataBase.getClient(username).getAccounts().get(accountIndex).able2Transaction(amount)) {
+                        if (bankDatabase.getClient(username).getAccounts().get(accountIndex).able2Transaction(amount)) {
                             if (!receiverAccountId.equals(listAccounts.getSelectedValue().toString())) {
-                                if (bankDataBase.accountIdExist(receiverAccountId)) {
-                                    bankDataBase.transfer(username, accountIndex, receiverAccountId, amount);
-                                    frameATM.setClient(bankDataBase.getClient(username));
+                                if (bankDatabase.accountIdExist(receiverAccountId)) {
+                                    bankDatabase.transfer(username, accountIndex, receiverAccountId, amount);
+                                    frameATM.setClient(bankDatabase.getClient(username));
                                     JOptionPane.showMessageDialog(this, "Transfer Success.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
                                     dispose();
                                 } else {
