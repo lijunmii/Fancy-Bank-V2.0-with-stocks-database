@@ -91,7 +91,10 @@ public class BankDatabase {
         marketStock.updateStockPrice();
     }
 
-    // functions below this comment will generate a record
+    /**
+     * Adds a client to database
+     * @param client : Client
+     */
     public void addClient(Client client) {
         clients.add(client);
 
