@@ -6,9 +6,9 @@ Group 21
 
 ## How to install
 
-The recommended approach is to run the application via IntelliJ
+The recommended approach is to run the application via IntelliJ IDEA
 
-To use IntelliJ:
+To use IntelliJ IDEA:
 
 1. open the application folder using IntelliJ
 2. Click the "File" in the menu and select "Project Structure"
