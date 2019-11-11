@@ -15,7 +15,7 @@ To use IntelliJ:
 3. Under "Project Structure", select Project SDK as 1.8 and Project Language level as 8. Finally, make sure to create a new folder and select the compiler output folder as the new folder
 4. In order to use the JDBC, you also need to setup the "Libraries" and use the driver called "mysql:mysql-connector-java:5.1.40". It can be searched from "Maven"
 5. Next, mark the "src" as the source folder and click the "Run" in the mean select "Edit Configuration".
-6. Under "Edit Configuration", click "+" and select "Application". From there,  make sure use the "FrameATM" as the main class.
+6. Under "Edit Configuration", click "+" and select "Application". From there,  make sure use the "Test" as the main class.
 7. Finally, run the application, and the UI will pop up
 
 ## How to create Database
