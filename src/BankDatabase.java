@@ -18,6 +18,7 @@ public class BankDatabase {
 
     private List<Client> clients;
     private List<TransactionRecord> records;
+    private List<Stock> stocks;
     private MarketStock marketStock;
 
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -34,10 +35,10 @@ public class BankDatabase {
     BankDatabase() {
         clients = new ArrayList<>();
         records = new ArrayList<>();
+        stocks = new ArrayList<>();
         // connect to a local database
         connectDatabase();
-        List<Stock> stocks;
-        stocks = readStock();
+        readStock();
         if (stocks.size() == 0) {
             marketStock = new MarketStock();
         } else {
@@ -208,6 +209,7 @@ public class BankDatabase {
     }
 
     public void buyStock(String username, int accountIndex, Stock stock, int buyAmount) {
+        readStock();
         getClient(username).buyStock(accountIndex, stock, buyAmount);
 
         Date date = new Date();
@@ -219,6 +221,7 @@ public class BankDatabase {
     }
 
     public void sellStock(String username, int accountIndex, Stock stock, int sellAmount) {
+        readStock();
         getClient(username).sellStock(accountIndex, stock, sellAmount);
 
         Date date = new Date();
@@ -254,11 +257,9 @@ public class BankDatabase {
 
     /**
      * Read Stocks information from the local Database
-     * @return stocks : List<Stock>
      */
-    public List<Stock> readStock() {
+    public void readStock() {
         String query = "select * from stocks";
-        List<Stock> stocks = new ArrayList<>();
         try {
             // opening db connection to MySQL server
             stmt = conn.createStatement();
@@ -272,10 +273,17 @@ public class BankDatabase {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try { stmt.close(); } catch (SQLException e) {e.printStackTrace();}
-            try { res.close(); } catch (SQLException e) {e.printStackTrace();}
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                res.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        return stocks;
     }
 
     /**
@@ -287,7 +295,6 @@ public class BankDatabase {
             Double price = stock.getPricePerShare();
             String tick = stock.getStockId();
             String query = "UPDATE stocks SET price = " + price + " WHERE tick = " + "\"" + tick + "\";";
-            System.out.println(query);
             try {
                 // opening db connection to MySQL server
                 stmt = conn.createStatement();
