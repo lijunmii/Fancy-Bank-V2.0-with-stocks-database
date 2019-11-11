@@ -116,6 +116,7 @@ public class BankDatabase {
 
     public void updateStockPrice() {
         marketStock.updateStockPrice();
+        saveDatabase(marketStock.getStocks());
     }
 
     /**
