@@ -34,9 +34,18 @@ public class BankDatabase {
     BankDatabase() {
         clients = new ArrayList<>();
         records = new ArrayList<>();
-        /** connect to a local database */
+        // connect to a local database
         connectDatabase();
-        marketStock = new MarketStock(readStock());
+        List<Stock> stocks;
+        stocks = readStock();
+        if (stocks.size() == 0) {
+            marketStock = new MarketStock();
+        } else {
+            marketStock = new MarketStock(stocks);
+        }
+        // stock prices vary every "day"
+        marketStock.updateStockPrice();
+        saveDatabase(marketStock.getStocks());
     }
 
     public List<Client> getClients() {
@@ -258,7 +267,6 @@ public class BankDatabase {
                 String company = res.getString("name");
                 String tick = res.getString("tick");
                 Double price = res.getDouble("price");
-                System.out.println(company + " " + tick + " " + price);
                 stocks.add(new Stock(company, tick, price));
             }
         } catch (SQLException e) {
@@ -268,5 +276,28 @@ public class BankDatabase {
             try { res.close(); } catch (SQLException e) {e.printStackTrace();}
         }
         return stocks;
+    }
+
+    /**
+     * Save Stock prices to the local Database
+     * @param stocks : List<Stock>
+     */
+    public void saveDatabase(List<Stock> stocks) {
+        for (Stock stock: stocks) {
+            Double price = stock.getPricePerShare();
+            String tick = stock.getStockId();
+            String query = "UPDATE stocks SET price = " + price + " WHERE tick = " + "\"" + tick + "\";";
+            System.out.println(query);
+            try {
+                // opening db connection to MySQL server
+                stmt = conn.createStatement();
+                stmt.executeUpdate(query);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try { stmt.close(); } catch (SQLException e) {e.printStackTrace();}
+                try { res.close(); } catch (SQLException e) {e.printStackTrace();}
+            }
+        }
     }
 }

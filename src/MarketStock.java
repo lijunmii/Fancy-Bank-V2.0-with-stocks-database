@@ -27,7 +27,8 @@ public class MarketStock extends MarketSecurities {
     public void updateStockPrice() {
         for (Stock stock : stocks) {
             Random random = new Random();
-            double priceUpDown = (99.0 + 2 * random.nextDouble()) / 100.0;
+            double randomPrice = (99.0 + 2 * random.nextDouble()) / 100.0;
+            double priceUpDown = Math.round(randomPrice * 100.0) / 100.0;
             stock.setPricePerShare(stock.getPricePerShare() * priceUpDown);
         }
     }
