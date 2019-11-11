@@ -3,6 +3,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class BankDatabase {
     public static final double savingInterestRate = 0.002;
     public static final double withdrawFeeRate = 0.002;
@@ -16,10 +22,21 @@ public class BankDatabase {
 
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-    BankDatabase() { // todo: read data from database
+    /** database credentials including host, username, password */
+    private static final String url = "jdbc:mysql://localhost:3306/stock?useSSL=false";
+    private static final String user = "root";
+    private static final String password = "pass";
+
+    private static Connection conn;
+    private static Statement stmt;
+    private static ResultSet res;
+
+    BankDatabase() {
         clients = new ArrayList<>();
         records = new ArrayList<>();
-        marketStock = new MarketStock();
+        /** connect to a local database */
+        connectDatabase();
+        marketStock = new MarketStock(readStock());
     }
 
     public List<Client> getClients() {
@@ -91,7 +108,10 @@ public class BankDatabase {
         marketStock.updateStockPrice();
     }
 
-    // functions below this comment will generate a record
+    /**
+     * Adds a client to database
+     * @param client : Client
+     */
     public void addClient(Client client) {
         clients.add(client);
 
@@ -198,5 +218,55 @@ public class BankDatabase {
         String recordSummary = "[" + date.toString() + "] SELL_STOCK";
         String recordContent = "[" + date.toString() + "] " + username + " sold " + sellAmount + " shares of " + stockInfo + " from account " + accountId + ".";
         addRecord(new TransactionRecord(recordSummary, recordContent));
+    }
+
+    /**
+     * Connection to the local Database
+     */
+    public void connectDatabase() {
+        try {
+            // opening db connection to MySQL server
+            conn = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Disconnect to the local Database
+     */
+    public void disconnectDatabase() {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Read Stocks information from the local Database
+     * @return stocks : List<Stock>
+     */
+    public List<Stock> readStock() {
+        String query = "select * from stocks";
+        List<Stock> stocks = new ArrayList<>();
+        try {
+            // opening db connection to MySQL server
+            stmt = conn.createStatement();
+            res = stmt.executeQuery(query);
+            while (res.next()) {
+                String company = res.getString("name");
+                String tick = res.getString("tick");
+                Double price = res.getDouble("price");
+                System.out.println(company + " " + tick + " " + price);
+                stocks.add(new Stock(company, tick, price));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try { stmt.close(); } catch (SQLException e) {e.printStackTrace();}
+            try { res.close(); } catch (SQLException e) {e.printStackTrace();}
+        }
+        return stocks;
     }
 }

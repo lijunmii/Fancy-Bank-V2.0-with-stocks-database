@@ -132,8 +132,8 @@ public class FrameATM extends JFrame {
             JPanel panel_5_2 = new JPanel(); {
                 panel_5_2.setBorder(BorderFactory.createEtchedBorder());
                 panel_5_2.setLayout(new GridLayout(2, 1));
-                panel_5_2.add(new JLabel("Version 1.0 | CS591 P1 Boston University", JLabel.CENTER));
-                panel_5_2.add(new JLabel("Contact us: Yufeng Chen, yufeng72@bu.edu", JLabel.CENTER));
+                panel_5_2.add(new JLabel("Version 2.0 | CS591 P1 Boston University", JLabel.CENTER));
+                panel_5_2.add(new JLabel("Contact us: Group 21", JLabel.CENTER));
             }
             panel_5.add(panel_5_2);
         }

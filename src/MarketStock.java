@@ -18,7 +18,6 @@ public class MarketStock extends MarketSecurities {
         marketType = marketTypes[0];
         this.stocks = new ArrayList<>();
         this.stocks.addAll(stocks);
-        // todo: read stock data from database here;
     }
 
     public List<Stock> getStocks() {
