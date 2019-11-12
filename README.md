@@ -3,6 +3,11 @@
 ## Authors
 
 Group 21
+Yufeng Chen, yufeng72@bu.edu
+Rui Pang, ruipang@bu.edu
+Hang Xu, xuh@bu.edu
+Lijun Chen, lijunc@bu.edu
+Anish Lyengar, anishi@bu.edu
 
 ## How to test
 
