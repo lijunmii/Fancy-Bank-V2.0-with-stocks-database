@@ -23,9 +23,9 @@ public class BankDatabase {
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
     /** database credentials including host, username, password */
-    private static final String url = "jdbc:mysql://localhost:3306/bank?useSSL=true";
-    private static final String user = "ruipang";
-    private static final String password = "1122";
+    private static final String url = "jdbc:mysql://localhost:3306/stock?useSSL=false";
+    private static final String user = "root";
+    private static final String password = "pass";
 
     private static Connection conn;
     private static Statement stmt;
@@ -54,6 +54,29 @@ public class BankDatabase {
     }
 
     public List<TransactionRecord> getRecords() {
+        String query = "select * from records";
+        try {
+            stmt = conn.createStatement();
+            res = stmt.executeQuery(query);
+            while (res.next()) {
+                String summary = res.getString("summary");
+                String content = res.getString("content");
+                records.add(new TransactionRecord(summary, content));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                res.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return records;
     }
 
@@ -111,7 +134,20 @@ public class BankDatabase {
     }
 
     public void addRecord(TransactionRecord record) {
-        records.add(record);
+        String summary = record.getRecordSummary();
+        String content = record.getRecordContent();
+        String query = "INSERT INTO records (summary, content) VALUES (\'" + summary + "\', \'" + content + "\');";
+        System.out.println(query);
+        try {
+            // opening db connection to MySQL server
+            stmt = conn.createStatement();
+            stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try { stmt.close(); } catch (SQLException e) {e.printStackTrace();}
+            try { res.close(); } catch (SQLException e) {e.printStackTrace();}
+        }
     }
 
     public void updateStockPrice() {
