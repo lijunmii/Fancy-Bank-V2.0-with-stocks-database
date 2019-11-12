@@ -81,7 +81,7 @@ public class FrameUpgrade extends JFrame {
                 Client client = bankDatabase.getClient(username);
                 int accountIndex = listAccounts.getSelectedIndex();
                 Account account = client.getAccounts().get(accountIndex);
-                if (account.getBalance() >= 3000 && account.getAccountType() == "saving") {
+                if (account.getBalance() >= 3000 && account.getAccountType() .equals("saving")) {
                     bankDatabase.upgradeToSecurities(username, accountIndex);
                     frameATM.setClient(bankDatabase.getClient(username));
                     JOptionPane.showMessageDialog(this, "Upgrade Success.", "SUCCESS", JOptionPane.INFORMATION_MESSAGE);

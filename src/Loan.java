@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-public class Loan {
+public class Loan implements Serializable {
     private Date requestDate;
     private double amount;
     private double repayment;

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
-public class Stock {
+public class Stock implements Serializable {
     protected String stockName;
     protected String stockId;
     protected double pricePerShare;

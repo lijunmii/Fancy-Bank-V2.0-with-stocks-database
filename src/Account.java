@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
-abstract class Account {
+abstract class Account implements Serializable {
     protected static final String[] accountTypes = {"checking", "saving", "securities"};
     protected String accountType;
     protected String accountId;
