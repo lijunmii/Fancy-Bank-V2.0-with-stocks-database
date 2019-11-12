@@ -11,11 +11,10 @@ Anish Lyengar, anishi@bu.edu
 
 ## How to test
 
-1. Run main method in Test.java to test all code. The recommended approach is to run the application via IntelliJ IDEA
-
+1. Run main method in Test.java to test all code. The recommended approach is to run the application via IntelliJ IDEA.
 2. The code in src folder is the db version (all data stored in the database). You need to setup database before you test it.
-If you don't want to setup database, you can test all functions in the no-db version (no database, all data stored in memory) by replacing "\src\Bankdatabase.java" with "\doc\BankDatabaseBackUp\offline\Bankdatabase.java".
-3. You can always choose to use "\doc\BankDatabaseBackUp\offline\Bankdatabase.java" for testing the no-db version, or "\doc\BankDatabaseBackUp\online\Bankdatabase.java" for testing the db version.
+If you don't want to setup database, you can test all functions in the no-db version (no database, all data stored in memory) by replacing "\src\Bankdatabase.java" with "\doc\BankDatabaseBackUp\withoutdb\Bankdatabase.java".
+3. You can always choose to use "\doc\BankDatabaseBackUp\withoutdb\Bankdatabase.java" for testing the no-db version, or "\doc\BankDatabaseBackUp\withdb\Bankdatabase.java" for testing the db version.
 
 ## How to create Database
 
