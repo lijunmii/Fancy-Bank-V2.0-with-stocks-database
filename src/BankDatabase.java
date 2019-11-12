@@ -137,7 +137,6 @@ public class BankDatabase {
         String summary = record.getRecordSummary();
         String content = record.getRecordContent();
         String query = "INSERT INTO records (summary, content) VALUES (\'" + summary + "\', \'" + content + "\');";
-        System.out.println(query);
         try {
             // opening db connection to MySQL server
             stmt = conn.createStatement();

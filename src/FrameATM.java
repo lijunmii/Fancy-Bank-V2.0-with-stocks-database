@@ -6,10 +6,6 @@ import java.util.List;
 public class FrameATM extends JFrame {
     public static void main(String[] args) {
         BankDatabase bankDatabase = new BankDatabase();
-        Client client = new Client("123", "123");
-        client.addAccount(new AccountChecking("123Acc1", 1000));
-        client.addAccount(new AccountSaving("123Acc2", 3000));
-        bankDatabase.addClient(client);
         FrameATM frameATM = new FrameATM(bankDatabase);
         frameATM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameATM.setVisible(true);
