@@ -21,5 +21,10 @@ To use IntelliJ IDEA:
 ## How to create Database
 
 1. First install mysql@5.7, and set the root password as "pass" (without the quotes)
-2. Next, create a database called stock. In stock create a table called stocks that has column names: name, tick, price.
-3. Our application will detect whether it has records for the stocks table so you are ready to run the application.
+2. Next, create a database called stock. In stock database, create three different tables: records, clientBytes, stocks.
+    `mysql> create database stock;`
+    `use stock;`
+    `create table stocks (name VARCHAR(255), tick VARCHAR(20), price DOUBLE);`
+    `create table clientByte ( userName varchar(20), javaObject blob, primary key (userName));`
+    `create records ( summary varchar(225), content varchar(225);`
+3. Run the application using IntelliJ
